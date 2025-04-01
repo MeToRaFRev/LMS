@@ -1,70 +1,117 @@
-# Getting Started with Create React App
+# Central Statistics Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was initially conceived as a solution to improve the user experience of data provided by the Central Bureau of Statistics (לשכה המרכזית לסטטיסטיקה). However, after thorough testing, it became clear that the underlying API is highly inconsistent and unreliable—no amount of UI refinement can compensate for its shortcomings. Nonetheless, this project remains a robust demonstration of modern React and Material‑UI techniques, along with a seamless data fetching strategy using Axios and fast‑xml‑parser.
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+- **Objective:**  
+  Provide a user-friendly dashboard for statistical data from the Central Bureau of Statistics.  
+  **Reality Check:** The API is problematic and often fails to deliver consistent results. This project highlights the importance of reliable backend data sources in any frontend redesign.
 
-### `npm start`
+- **Key Features:**  
+  - **Responsive UI:** Built with React and Material‑UI, supporting both RTL and LTR layouts.  
+  - **Data Fetching Strategy:**  
+    - Attempts to fetch data as JSON via Axios.  
+    - Falls back to XML and converts it to JSON using fast‑xml‑parser when needed.  
+  - **Toggleable Catalog Views:** Users can switch between tree and list views for catalog data.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Technologies
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- [React](https://reactjs.org/)
+- [Material‑UI (MUI)](https://mui.com/)
+- [Axios](https://axios-http.com/)
+- [fast‑xml‑parser](https://www.npmjs.com/package/fast-xml-parser)
+- [Lucide React Icons](https://lucide.dev/)
 
-### `npm test`
+## Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. **Clone the Repository:**
 
-### `npm run build`
+   ```bash
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. **Install Dependencies:**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. **Customize the Theme (Optional):**
 
-### `npm run eject`
+   Modify the theme settings in `./src/theme.js` (or `./src/theme.ts`) to adjust colors, typography, and spacing as needed.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Running the Application
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Start the development server:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm start
+# or
+yarn start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+The app will run on [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+## Data Fetching Strategy
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The `fetchData` function handles data retrieval as follows:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. **Primary JSON Request:**  
+   Uses Axios to fetch data with an `Accept: application/json` header.
+2. **Fallback to XML:**  
+   If the JSON request fails, the function automatically retries the request as XML, then converts the XML to JSON using fast‑xml‑parser.
 
-### Code Splitting
+### Example Usage
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```js
+fetchData({
+  url: 'https://apis.cbs.gov.il/series/catalog/level',
+  params: { id: 2, subject: 2, format: 'json', download: false },
+})
+  .then((data) => console.log('Fetched data:', data))
+  .catch((err) => console.error('Data fetch error:', err));
+```
 
-### Analyzing the Bundle Size
+## Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
+.
+├── public
+│   └── index.html
+├── src
+│   ├── components
+│   │   ├── CatalogList.js
+│   │   ├── CatalogTreeView.js
+│   │   └── CatalogToggleView.js
+│   ├── fetchData.js
+│   ├── theme.js
+│   ├── App.js
+│   └── index.js
+├── package.json
+└── README.md
+```
 
-### Making a Progressive Web App
+## Known Issues
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- **API Reliability:**  
+  The Central Bureau of Statistics API is inconsistent. Despite our efforts to gracefully degrade from JSON to XML, the unreliable API remains a major hurdle.
+- **Infinite Request Loop:**  
+  Ensure that asynchronous operations are properly handled in React (e.g., using `useEffect` for data fetching) to avoid rendering loops.
 
-### Advanced Configuration
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This project is licensed under the [MIT License](LICENSE).
 
-### Deployment
+## Contributing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Contributions are welcome. If you have suggestions for improving the data fetching strategy or handling API inconsistencies, please open an issue or submit a pull request.
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Final Note
+
+While this project demonstrates modern frontend development techniques and best practices, it also serves as a case study in the critical role that dependable API design plays in application success. In this instance, even the best design cannot fully compensate for a fundamentally flawed backend service.
